@@ -13,7 +13,7 @@ Window {
         width: parent.width
         text: "D:\\code\\RandB\\media\\gx.wmv"
         color: "blue"
-        //focus: true
+        focus: true
 
         onEditingFinished: {
             player.play(uri.text)

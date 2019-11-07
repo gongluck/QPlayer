@@ -1,5 +1,5 @@
-#ifndef QSDLPLAYER_H
-#define QSDLPLAYER_H
+#ifndef QVLCPLAYER_H
+#define QVLCPLAYER_H
 
 #include <QObject>
 #include <QWindow>
@@ -35,4 +35,4 @@ private:
     libvlc_media_player_t* player_ = nullptr;
 };
 
-#endif // QSDLPLAYER_H
+#endif // QVLCPLAYER_H
