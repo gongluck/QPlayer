@@ -6,30 +6,27 @@ Window {
     visible: true
     width: 640
     height: 480
-    title: mediaplayer.source
+    title: uri.text
 
     TextInput {
         id: uri
         width: parent.width
-        text: "D://code//RandB//media//gx.wmv"
+        text: "D:\\code\\RandB\\media\\gx.wmv"
         color: "blue"
-        focus: true
+        //focus: true
 
         onEditingFinished: {
-           mediaplayer.play()
+            player.play(uri.text)
         }
     }
 
-    MediaPlayer {
-        id: mediaplayer
-        source: uri.text
-    }
-    VideoOutput {
+    Rectangle {
+        id: displaywnd
+        objectName: "displaywnd"
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height - uri.height
-        source: mediaplayer
-        autoOrientation: true
+        color: "black"
     }
 }
