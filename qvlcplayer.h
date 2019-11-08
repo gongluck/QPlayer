@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QWindow>
 #include <QQuickItem>
+#ifdef WIN32
+#include <Windows.h>
+#define ssize_t SSIZE_T
+#endif
 #include <vlc/vlc.h>
 
 class QVLCPlayer : public QObject
