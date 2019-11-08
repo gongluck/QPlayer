@@ -27,6 +27,6 @@ Window {
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height - uri.height
-        color: "black"
+        color: "green"
     }
 }
