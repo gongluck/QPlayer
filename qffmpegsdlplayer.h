@@ -39,6 +39,7 @@ private:
     SDL_Window* sdlwnd_ = nullptr;
     SDL_Renderer* sdlrender_ = nullptr;
 
+    std::vector<unsigned int> videovec_, audiovec_;
     gff::gdemux demux_;
     gff::gdec vdec_;
     gff::gdec adec_;

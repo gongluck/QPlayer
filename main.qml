@@ -11,7 +11,7 @@ Window {
     TextInput {
         id: uri
         width: parent.width
-        text: "D:\\code\\RandB\\media\\gx.wmv"
+        text: "E:\\code\\RandB\\media\\in.flv"
         color: "blue"
         focus: true
 
