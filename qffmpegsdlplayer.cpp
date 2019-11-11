@@ -107,35 +107,23 @@ int QFFMPEGSDLPlayer::play(const QString& uri)
                             assert(sdlrender_);
                             bresize = false;
                         }
+
                         SDL_Texture* texture = nullptr;
-                        byte* buf = nullptr;
                         switch (static_cast<AVPixelFormat>(frame->format))
                         {
                         case (AV_PIX_FMT_YUV420P):
                             texture = SDL_CreateTexture(sdlrender_, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, frame->width, frame->height);
-                            buf = static_cast<byte*>(malloc(static_cast<size_t>(frame->width * frame->linesize[0] * 3 / 2)));
                             break;
                         default:
                             break;
                         }
                         if(texture != nullptr)
-                        {
-                            memcpy(buf, frame->data[0], static_cast<size_t>(frame->height * frame->linesize[0]));
-                            memcpy(buf+frame->height*frame->linesize[0], frame->data[1], static_cast<size_t>(frame->height * frame->linesize[1] / 2));
-                            memcpy(buf+frame->height*frame->linesize[0]*5/4, frame->data[2], static_cast<size_t>(frame->height * frame->linesize[2] / 2));
-                            ret = SDL_UpdateTexture(texture, nullptr, buf, frame->linesize[0]);         
+                        {      
+                            ret = SDL_UpdateYUVTexture(texture, nullptr, frame->data[0], frame->linesize[0], frame->data[1], frame->linesize[1], frame->data[2], frame->linesize[2]);
                             ret = SDL_RenderClear(sdlrender_);
                             ret = SDL_RenderCopy(sdlrender_, texture, nullptr, nullptr);
                             SDL_RenderPresent(sdlrender_);
-                        }
-
-                        if(texture != nullptr)
-                        {
                             SDL_DestroyTexture(texture);
-                        }
-                        if(buf != nullptr)
-                        {
-                            free(buf);
                         }
                     } while (vdec_.decode(nullptr, frame) >= 0);
                 }
