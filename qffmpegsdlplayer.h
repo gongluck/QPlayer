@@ -46,6 +46,7 @@ private:
 
     bool bstop_ = false;
     std::thread demuxth_;
+    bool bresize = false;
 };
 
 #endif // QFFMPEGSDLPLAYER_H

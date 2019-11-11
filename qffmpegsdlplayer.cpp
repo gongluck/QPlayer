@@ -4,12 +4,18 @@
 
 QFFMPEGSDLPlayer::QFFMPEGSDLPlayer(QObject *parent) : QObject(parent)
 {
-
+    sdlwnd_ = SDL_CreateWindowFrom(reinterpret_cast<QVariant*>(wnd_.winId()));
+    assert(sdlwnd_);
 }
 
 QFFMPEGSDLPlayer::~QFFMPEGSDLPlayer()
 {
     stop();
+    if(sdlwnd_ != nullptr)
+    {
+        SDL_DestroyWindow(sdlwnd_);
+        sdlwnd_ = nullptr;
+    }
 }
 
 void QFFMPEGSDLPlayer::resizewnd()
@@ -18,6 +24,11 @@ void QFFMPEGSDLPlayer::resizewnd()
     wnd_.setY(rect_->property("y").toInt());
     wnd_.setWidth(rect_->property("width").toInt());
     wnd_.setHeight(rect_->property("height").toInt());
+    // 标记窗口变化再重新创建renderer,
+    // 也可以修改sdl2源码void SDL_OnWindowResized(SDL_Window * window)函数中
+    // 发送SDL_WINDOWEVENT_SIZE_CHANGED消息改为发送SDL_WINDOWEVENT_RESIZED消息(本人验证过成功)
+    // 但我不太想改sdl2的源码
+    bresize = true;
 }
 
 void QFFMPEGSDLPlayer::setRect(QQuickItem* r)
@@ -37,12 +48,6 @@ int QFFMPEGSDLPlayer::play(const QString& uri)
 {
     int ret = stop();
     CHECKFFRET(ret);
-
-    //sdlwnd_ = SDL_CreateWindowFrom(reinterpret_cast<QVariant*>(wnd_.winId()));
-    sdlwnd_ = SDL_CreateWindow("test", 0 , 0, 400, 300, ::SDL_WINDOW_OPENGL | ::SDL_WINDOW_RESIZABLE);
-    assert(sdlwnd_);
-    sdlrender_ = SDL_CreateRenderer(sdlwnd_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    assert(sdlrender_);
 
     ret = demux_.open(uri.toStdString().c_str());
     CHECKFFRET(ret);
@@ -68,6 +73,7 @@ int QFFMPEGSDLPlayer::play(const QString& uri)
     }
 
     bstop_ = false;
+    resizewnd();
     std::thread th([&]
     {
         int ret = 0;
@@ -89,6 +95,18 @@ int QFFMPEGSDLPlayer::play(const QString& uri)
                 {
                     do
                     {  
+                        if(bresize)
+                        {
+                            if(sdlrender_ != nullptr)
+                            {
+                                SDL_DestroyRenderer(sdlrender_);
+                                sdlrender_ = nullptr;
+                            }
+                            assert(sdlwnd_);
+                            sdlrender_ = SDL_CreateRenderer(sdlwnd_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+                            assert(sdlrender_);
+                            bresize = false;
+                        }
                         SDL_Texture* texture = nullptr;
                         byte* buf = nullptr;
                         switch (static_cast<AVPixelFormat>(frame->format))
@@ -159,11 +177,6 @@ int QFFMPEGSDLPlayer::stop()
     {
         SDL_DestroyRenderer(sdlrender_);
         sdlrender_ = nullptr;
-    }
-    if(sdlwnd_ != nullptr)
-    {
-        SDL_DestroyWindow(sdlwnd_);
-        sdlwnd_ = nullptr;
     }
     rect_->setVisible(true);
     wnd_.hide();
