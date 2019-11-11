@@ -4,8 +4,7 @@
 
 QFFMPEGSDLPlayer::QFFMPEGSDLPlayer(QObject *parent) : QObject(parent)
 {
-    sdlwnd_ = SDL_CreateWindowFrom(reinterpret_cast<QVariant*>(wnd_.winId()));
-    assert(sdlwnd_);
+
 }
 
 QFFMPEGSDLPlayer::~QFFMPEGSDLPlayer()
@@ -35,6 +34,9 @@ void QFFMPEGSDLPlayer::setRect(QQuickItem* r)
 {
     rect_ = r;
     wnd_.setParent(r->parentItem()->window());
+    // 必须要在绑定父窗口后才能创建这个SDL_Window
+    sdlwnd_ = SDL_CreateWindowFrom(reinterpret_cast<QVariant*>(wnd_.winId()));
+    assert(sdlwnd_);
     QObject::connect(r, SIGNAL(xChanged()), this, SLOT(resizewnd()));
     QObject::connect(r, SIGNAL(yChanged()), this, SLOT(resizewnd()));
     QObject::connect(r, SIGNAL(widthChanged()), this, SLOT(resizewnd()));
@@ -102,7 +104,6 @@ int QFFMPEGSDLPlayer::play(const QString& uri)
                                 SDL_DestroyRenderer(sdlrender_);
                                 sdlrender_ = nullptr;
                             }
-                            assert(sdlwnd_);
                             sdlrender_ = SDL_CreateRenderer(sdlwnd_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
                             assert(sdlrender_);
                             bresize = false;
