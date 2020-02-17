@@ -9,25 +9,37 @@ Rectangle {
     TextInput {
         id: uri
         width: parent.width
-        text: "E://code//RandB//media//gx.wmv"
+        text: "E://code/RandB/media/gx.wmv"
         color: "blue"
-        focus: true
-
-        onEditingFinished: {
-           mediaplayer.play()
-        }
+        clip: true
+//        onEditingFinished: {
+//           mediaplayer.play()
+//        }
     }
 
-    MouseArea{
+    MediaPlayer {
+        id: mediaplayer
+        source: uri.text
+    }
+    VideoOutput {
+        id: videooutput
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height - uri.height
-        onPressedButtonsChanged: {
+        source: mediaplayer
+        autoOrientation: true 
+    }
+
+    MouseArea{
+        anchors.fill: videooutput
+        onClicked: {
             mediaplayer.play()
         }
+        onDoubleClicked: {
+            mediaplayer.stop()
+        }
 
-        anchors.fill: parent
         property real lastX: 0
         property real lastY: 0
         onPressed: {
@@ -40,18 +52,5 @@ Rectangle {
                 parent.y += mouseY - lastY
             }
         }
-    }
-
-    MediaPlayer {
-        id: mediaplayer
-        source: uri.text
-    }
-    VideoOutput {
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        width: parent.width
-        height: parent.height - uri.height
-        source: mediaplayer
-        autoOrientation: true 
     }
 }
