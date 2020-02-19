@@ -6,6 +6,13 @@ import QtQuick.Controls 2.12
 Rectangle {
     color: "black"
 
+    function setTop(){
+        z = 1
+    }
+    function setBot(){
+        z = 0
+    }
+
     TextInput {
         id: uri
         width: parent.width
@@ -45,7 +52,12 @@ Rectangle {
         onPressed: {
             lastX = mouseX
             lastY = mouseY
+            setTop()
         }
+        onReleased: {
+            setBot()
+        }
+
         onPositionChanged: {
             if (pressed) {
                 parent.x += mouseX - lastX
