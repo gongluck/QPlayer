@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Player.qml</file>
+        <file>Counter.qml</file>
     </qresource>
 </RCC>

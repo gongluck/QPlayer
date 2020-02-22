@@ -3,27 +3,34 @@ import QtQuick.Window 2.12
 import QtMultimedia 5.12
 import QtQuick.Controls 2.12
 
+//播放器
 Rectangle {
     color: "black"
+    property Counter counter
+    property bool canchangez : false
 
-    function setTop(){
-        z = 1
+    function setTop() {
+        z = counter.getNext()
+        //console.log("change z to ", z)
     }
     function setBot(){
-        z = 0
+        //z = 0
     }
 
     TextInput {
         id: uri
         width: parent.width
-        text: "E://code/RandB/media/gx.wmv"
+        //text: "file:../RandB/media/gx.wmv"
+        text: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
         color: "blue"
         clip: true
-//        onEditingFinished: {
-//           mediaplayer.play()
-//        }
+        //onEditingFinished: {
+        //  mediaplayer.play()
+        //}
     }
 
+    //需要安装LAVFilter
+    //低版本QT(5.12)也可能会出现debug版本运行出错
     MediaPlayer {
         id: mediaplayer
         source: uri.text
@@ -35,7 +42,7 @@ Rectangle {
         width: parent.width
         height: parent.height - uri.height
         source: mediaplayer
-        autoOrientation: true 
+        autoOrientation: true
     }
 
     MouseArea{
@@ -52,10 +59,14 @@ Rectangle {
         onPressed: {
             lastX = mouseX
             lastY = mouseY
-            setTop()
+            if(canchangez){
+                setTop()
+            }
         }
         onReleased: {
-            setBot()
+            if(canchangez){
+                setBot()
+            }
         }
 
         onPositionChanged: {
