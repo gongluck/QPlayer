@@ -1,7 +1,7 @@
 import QtQuick 2.12
-import QtQuick.Window 2.12
 import QtMultimedia 5.12
 import QtQuick.Controls 2.12
+import QtQuick.Dialogs 1.2
 
 //播放器
 Rectangle {
@@ -19,15 +19,33 @@ Rectangle {
 
     TextInput {
         id: uri
-        width: parent.width
+        width: parent.width - btn.width
         //text: "file:../RandB/media/gx.wmv"
-        text: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+        text: qsTr("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov")
         color: "blue"
         clip: true
         //onEditingFinished: {
         //  mediaplayer.play()
         //}
     }
+    Button {
+        id: btn
+        anchors.right: parent.right
+        height: uri.height
+        text: qsTr("file")
+        highlighted: true
+        onClicked: {
+            fileDialog.open()
+        }
+    }
+    FileDialog {
+            id: fileDialog
+            title: qsTr("Please choose a media file")
+            nameFilters: [ "Media Files (*.mp4 *.flv *.avi *.wmv *.mkv)", "*.*"]
+            onAccepted: {
+                uri.text = String(fileUrl)
+            }
+        }
 
     //需要安装LAVFilter
     //低版本QT(5.12)也可能会出现debug版本运行出错
