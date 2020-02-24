@@ -1,6 +1,7 @@
 # QPlayer
 Qt媒体播放器
 ## master分支(√)
+![img](https://github.com/gongluck/QPlayer/blob/master/show.gif)
 #### --使用qml的QtMultimedia模块作为播放器的核心
 ## QPlayer-VLC分支
 #### --使用VLC模块作为播放器的核心
