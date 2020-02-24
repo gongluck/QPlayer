@@ -52,6 +52,7 @@ Rectangle {
     MediaPlayer {
         id: mediaplayer
         source: uri.text
+        loops: MediaPlayer.Infinite
     }
     VideoOutput {
         id: videooutput
