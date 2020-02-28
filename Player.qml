@@ -27,6 +27,9 @@ Rectangle {
     TextInput {
         id: uri
         width: parent.width - btn.width
+        height: 25
+        font.pixelSize: 15
+        topPadding: 5
         //text: "file:../RandB/media/gx.wmv"
         text: qsTr("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov")
         color: "blue"
@@ -41,6 +44,7 @@ Rectangle {
         anchors.right: parent.right
         height: uri.height
         text: qsTr("file")
+
         highlighted: true
         onClicked: {
             fileDialog.open()
