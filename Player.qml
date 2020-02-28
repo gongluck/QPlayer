@@ -17,6 +17,13 @@ Rectangle {
         //z = 0
     }
 
+    //背景图
+    Image{
+        id: bkimg
+        source: "qrc:/bk.png"
+        anchors.fill: parent
+    }
+
     TextInput {
         id: uri
         width: parent.width - btn.width
@@ -30,6 +37,7 @@ Rectangle {
     }
     Button {
         id: btn
+        width: 100
         anchors.right: parent.right
         height: uri.height
         text: qsTr("file")
@@ -51,7 +59,6 @@ Rectangle {
     //低版本QT(5.12)也可能会出现debug版本运行出错
     MediaPlayer {
         id: mediaplayer
-        source: uri.text
         loops: MediaPlayer.Infinite
     }
     VideoOutput {
@@ -67,10 +74,13 @@ Rectangle {
     MouseArea{
         anchors.fill: videooutput
         onClicked: {
+            bkimg.visible = false
+            mediaplayer.source = uri.text
             mediaplayer.play()
         }
         onDoubleClicked: {
             mediaplayer.stop()
+            bkimg.visible = true
         }
 
         property real lastX: 0

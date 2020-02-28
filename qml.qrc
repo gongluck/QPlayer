@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>Player.qml</file>
         <file>Counter.qml</file>
+        <file>bk.png</file>
     </qresource>
 </RCC>
